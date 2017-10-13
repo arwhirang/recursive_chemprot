@@ -12,7 +12,7 @@ This is the open source repository of my Recursive Neural Network model for the 
 &ensp;&ensp;nltk  
 
 ## Data:  
-&ensp;Use the preprocessed test, validation and train data in the Demo/data folder. This is not the original data.  
+&ensp;Extract the preprocessed data; put test, validation and train data in the Demo/data folder. This is not the original data.  
 &ensp;Word embedding is not included. visit : http://evexdb.org/pmresources/vec-space-models/
 
 ## Training and Testing:  
