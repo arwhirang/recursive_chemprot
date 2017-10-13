@@ -17,7 +17,7 @@ This is the open source repository of my Recursive Neural Network model for the 
 
 ## Training and Testing:  
 &ensp;First, run the "saveWEUsedinDataOnly" code to reduce the size of the word embedding.  
-&ensp;Second, run the "BC6train" code for the DDI detection single model classifier.
+&ensp;Second, run the "BC6track5Recursive" code for the DDI detection single model classifier.
 &ensp;Note : you may want to change the directory path for reserving logits.
 
 &ensp;Potision Embedding implementation  
