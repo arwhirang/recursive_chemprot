@@ -62,9 +62,9 @@ def load_data_and_labels(string):
 
 data_dir = "./save"
 print('saving files to %s' % data_dir)
-TrainFeatures = load_data_and_labels("dataPreprocessor/trainingPosit_chem")
-DevFeatures = load_data_and_labels("dataPreprocessor/developPosit_chem")
-TestFeatures = load_data_and_labels("dataPreprocessor/testPosit_chem")
+TrainFeatures = load_data_and_labels("data/trainingPosit_chem")
+DevFeatures = load_data_and_labels("data/developPosit_chem")
+TestFeatures = load_data_and_labels("data/testPosit_chem")
 
 #For the final test, merge the train and development set for training
 train_trees = [Tf[0] for Tf in TrainFeatures] + [Tf[0] for Tf in DevFeatures]
