@@ -65,9 +65,9 @@ def load_data_and_labels(string):
 
 # Data Preparatopn
 # ==================================================
-TrainFeatures = load_data_and_labels("dataPreprocessor/trainingPosit_chem")
-DevFeatures = load_data_and_labels("dataPreprocessor/developPosit_chem")
-TestFeatures = load_data_and_labels("dataPreprocessor/testPosit_chem")
+TrainFeatures = load_data_and_labels("data/trainingPosit_chem")
+DevFeatures = load_data_and_labels("data/developPosit_chem")
+TestFeatures = load_data_and_labels("data/testPosit_chem")
 
 allSens1 = [Tf[1] for Tf in TrainFeatures]+ [Tf[1] for Tf in DevFeatures]+ [Tf[1] for Tf in TestFeatures]
 splitted1 = [sentence.split(", ") for sentence in allSens1]
