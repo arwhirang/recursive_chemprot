@@ -22,7 +22,7 @@ Common
 &ensp;&ensp;nltk  
   
 ## Data:  
-&ensp;All the data for the model is inside data folder of the the each approaches. Due to the file sizes, we zipped the files.  
+&ensp;All the data for the model is inside the data folder of the the each approaches. Due to the file sizes, we zipped the files.  
 &ensp;Extract the data zipped files inside the data folder. All data is not the original data.(pre-processed data)  
 &ensp;Word embedding is not included. visit : http://evexdb.org/pmresources/vec-space-models/
 
