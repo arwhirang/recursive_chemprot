@@ -13,7 +13,7 @@ from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
 import tensorflow.contrib.eager as tfe
-import my_data
+import data_chemprot
 from sklearn import metrics
 import pickle
 
@@ -84,8 +84,8 @@ if __name__ == "__main__":
 
   config = FLAGS
   # Load embedding vectors.
-  vocab = my_data.load_vocabulary("chemprot-data")
-  word2index, embed, index2word = my_data.load_bioWE_vectors(vocab)
+  vocab = data_chemprot.load_vocabulary("chemprot-data")
+  word2index, embed, index2word = data_chemprot.load_bioWE_vectors(vocab)
 
   embedding_for_given_index = (word2index, embed)
   ft = open('shorten_bc6/pubpmc.pickle', 'wb')
