@@ -468,6 +468,59 @@ def _get_dataset_iterator_noShuffle(chemprot_data, batch_size):
 
     return tfe.Iterator(dataset)
 
+def test_spinn(embed, test_data, config):
+  """Test a SPINN model.
+
+  Args:
+    embed: The embedding matrix as a float32 numpy array with shape
+      [vocabulary_size, word_vector_len]. word_vector_len is the length of a
+      word embedding vector.
+    test_data: An instance of `data_chemprot.ChemprotData`, for the test split.
+    config: A configuration object. See the argument to this Python binary for
+      details.
+
+  Returns:
+    1. Final loss value on the test split.
+    2. Final fraction of correct classifications on the test split.
+  """
+  use_gpu = tfe.num_gpus() > 0 and not config.force_cpu
+  device = "gpu:0" if use_gpu else "cpu:0"
+  print("Using device: %s" % device)
+
+  log_header = (
+      "  Time Epoch Iteration Progress    (%Epoch)   Loss   Dev/Loss"
+      "     Accuracy  Dev/Accuracy")
+  dev_log_template = (
+      "{:>6.0f} {:>5.0f} {:>9.0f} {:>5.0f}/{:<5.0f} {:>7.0f}% {:>8.6f} "
+      "{:8.6f} {:12.4f} {:12.4f}")
+
+  summary_writer = tf.contrib.summary.create_file_writer(
+      config.logdir, flush_millis=10000)
+  with tf.device(device), \
+       summary_writer.as_default(), \
+       tf.contrib.summary.always_record_summaries():
+    model = ChemprotClassifier(config, embed)
+    latest_checkpoint = tf.train.latest_checkpoint(config.logdir)
+    print("Latest checkpoint", latest_checkpoint)
+    tfe.restore_network_checkpoint(model, tf.train.latest_checkpoint(config.logdir))
+
+    start = time.time()
+    dev_mean_loss = tfe.metrics.Mean()
+    dev_accuracy = tfe.metrics.Accuracy()
+    print(log_header)
+
+    #restore
+    dev_loss, dev_frac_correct, dev_f1, dev_lables, dev_logits, dev_pmids, dev_ent1s, dev_ent2s = _evaluate_on_dataset(
+        dev_data, config.batch_size, model, use_gpu)
+
+    print(dev_log_template.format(
+        time.time() - start,
+        0, 0, 1, 0,
+        1 / 1,
+        0, dev_loss,
+        0, dev_frac_correct * 100.0))
+    print(dev_f1)
+
 def train_spinn(embed, train_data, dev_data, config):
   """Train a SPINN model.
 
@@ -522,7 +575,7 @@ def train_spinn(embed, train_data, dev_data, config):
           train_data, config.batch_size):
         if use_gpu:
           label, word_ids = label.gpu(), word_ids.gpu()
-          # trans are used for dynamic control flow 
+          # trans are used for dynamic control flow
 
         iterations += 1
         with tfe.GradientTape() as tape:
@@ -539,7 +592,9 @@ def train_spinn(embed, train_data, dev_data, config):
         accuracy(tf.argmax(logits, axis=1), label)
 
         if iterations % config.save_every == 0:
-          tfe.Saver(model.variables).save(os.path.join(config.logdir, "ckpt"), global_step=global_step)
+          #tfe.Saver(model.variables).save(os.path.join(config.logdir, "ckpt"), global_step=global_step)
+          # This line works.
+          tfe.save_network_checkpoint(model, os.path.join(config.logdir, "ckpt"), global_step=global_step)
 
         if iterations % config.dev_every == 0:
           dev_loss, dev_frac_correct, dev_f1, dev_lables, dev_logits, dev_pmids, dev_ent1s, dev_ent2s = _evaluate_on_dataset(
@@ -676,17 +731,20 @@ def main(_):
   word2index, embed = embedding_for_given_index1
 
   print("Loading train, dev and test data...")
-  train_data = data_chemprot.ChemprotData(
-      os.path.join("chemprot-data", "train_whole_SNLIformat"),#training_SNLIformat
-      word2index, sentence_len_limit=FLAGS.sentence_len_limit)
-  dev_data = data_chemprot.ChemprotData(
-      os.path.join("chemprot-data", "test_SNLIformat"),#develop_SNLIformat
-      word2index, sentence_len_limit=FLAGS.sentence_len_limit)
-  test_data = data_chemprot.ChemprotData(
-      os.path.join("chemprot-data", "test_SNLIformat"),
-      word2index, sentence_len_limit=FLAGS.sentence_len_limit)
 
-  train_spinn(embed, train_data, dev_data, config)
+  if not FLAGS.test_bool:
+      train_data = data_chemprot.ChemprotData(
+          os.path.join("chemprot-data", "train_whole_SNLIformat"),#training_SNLIformat
+          word2index, sentence_len_limit=FLAGS.sentence_len_limit)
+      dev_data = data_chemprot.ChemprotData(
+          os.path.join("chemprot-data", "test_SNLIformat"),#develop_SNLIformat
+          word2index, sentence_len_limit=FLAGS.sentence_len_limit)
+      train_spinn(embed, train_data, dev_data, config)
+  else:
+      test_data = data_chemprot.ChemprotData(
+          os.path.join("chemprot-data", "test_SNLIformat"),
+      word2index, sentence_len_limit=FLAGS.sentence_len_limit)
+      test_spinn(embed, test_data, config)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(
@@ -751,6 +809,9 @@ if __name__ == "__main__":
   parser.add_argument("--force_cpu", action="store_true", dest="force_cpu",
                       help="Force use CPU-only regardless of whether a GPU is "
                       "available.")
+  parser.add_argument("--test_bool", action="store_true", dest="test_bool",
+                      help="For test")
+
   FLAGS, unparsed = parser.parse_known_args()
 
   tfe.run(main=main, argv=["--data_root chemprot-data --logdir tmpLog"])
