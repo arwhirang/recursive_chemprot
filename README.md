@@ -12,7 +12,7 @@ tree-LSTM
 &ensp;Tensorflow Fold https://github.com/tensorflow/fold  
   
 SPINN  
-&ensp;Tensorflow ver nightly  (eager mode is required) 
+&ensp;Tensorflow ver 1.8  (eager mode is required) 
   
 Common  
 &ensp;python 3.4 or later  
