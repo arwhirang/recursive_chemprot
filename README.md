@@ -1,5 +1,6 @@
 # recursive_chemprot
 This is the open source repository of my Recursive Neural Network model for the BioCreative 6 track5 - chemprot task.  
+The paper is located at: https://academic.oup.com/database/article/doi/10.1093/database/bay060/5042822  
 Our experiments from the paper are divided into 3 approaches.  
 The first approach use the tree-LSTM model and this approach was used in the CHEMPROT challenge.  
 After the challenge, we experimented two enhacements. The second approach applied additional preprocessing steps to our tree-LSTM model, and the third approach tested the performance of the another Recursive Neural Network model, SPINN.  
