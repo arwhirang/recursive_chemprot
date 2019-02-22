@@ -27,7 +27,8 @@ Common
 &ensp;Extract the data zipped files inside the data folder. All data is not the original data.(pre-processed data)  
 &ensp;Word embedding is not included. visit : http://evexdb.org/pmresources/vec-space-models/  
 &ensp;Original Challenge data is in the biocreative site : http://www.biocreative.org/resources/corpora/chemprot-corpus-biocreative-vi/ (login required)  
-&ensp;*update: biocreative site has been changed to ==> https://biocreative.bioinformatics.udel.edu
+&ensp;*update: biocreative site has been changed to ==> https://biocreative.bioinformatics.udel.edu  
+&ensp;*update: original biocreative site is opened again!  
 
 ## Training and Testing:  
 tree-LSTM  
